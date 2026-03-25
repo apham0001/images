@@ -4,3 +4,35 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
+    groups:
+      go-dependencies:
+        patterns: ["*"]
+  - package-ecosystem: "docker"
+    directory: "/containerssh"
+    schedule:
+      interval: "weekly"
+    groups:
+      docker-deps:
+        patterns: ["*"]
+  - package-ecosystem: "docker"
+    directory: "/agent"
+    schedule:
+      interval: "weekly"
+    groups:
+      docker-deps:
+        patterns: ["*"]
+  - package-ecosystem: "docker"
+    directory: "/guest-image"
+    schedule:
+      interval: "weekly"
+    groups:
+      docker-deps:
+        patterns: ["*"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]

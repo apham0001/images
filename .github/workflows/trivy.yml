@@ -1,0 +1,72 @@
+name: Trivy Security Scan
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'
+jobs:
+  scan-containerssh:
+    name: Scan ContainerSSH Image
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build ContainerSSH image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./containerssh
+          push: false
+          load: true
+          tags: containerssh/containerssh:scan
+          build-args: |
+            CONTAINERSSH_VERSION=v0.6.0
+      - name: Run Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'containerssh/containerssh:scan'
+          format: 'sarif'
+          output: 'trivy-containerssh.sarif'
+          severity: 'CRITICAL,HIGH'
+      - name: Upload results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-containerssh.sarif'
+          category: 'containerssh'
+
+  scan-agent:
+    name: Scan Agent Image
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Agent image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./agent
+          push: false
+          load: true
+          tags: containerssh/agent:scan
+      - name: Run Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'containerssh/agent:scan'
+          format: 'sarif'
+          output: 'trivy-agent.sarif'
+          severity: 'CRITICAL,HIGH'
+      - name: Upload results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-agent.sarif'
+          category: 'agent'
