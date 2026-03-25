@@ -92,4 +92,4 @@ In this case the build script would create the following tags:
 - 0.4.0
 - 0.4.0-20200318
 
-Users can safely rely on the tag with the ContainerSSH version, or can specify a very specific build version should they need to pin to an immutable version.
+Users can safely rely on the tag with the ContainerSSH version, or can specify a very specific build version should they need to pin to an immutable version.# CI validation
